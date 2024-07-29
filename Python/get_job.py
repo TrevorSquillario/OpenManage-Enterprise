@@ -183,26 +183,35 @@ def get_job_execution_history(authenticated_headers: dict, ome_ip_address: str, 
         for job_history in job_histories:
             job_history_detail_url = job_history['ExecutionHistoryDetails@odata.navigationLink']
             job_history_detail_url = ("https://%s" % ome_ip_address) + job_history_detail_url
-            job_history_detail_response = requests.get(job_history_detail_url, headers=authenticated_headers, verify=False)
-            if job_history_detail_response.status_code == 200:
-                job_history_detail_data = job_history_detail_response.json()
-                job_history_detail_data = job_history_detail_data["value"]
-                for item in job_history_detail_data:
-                    data_export.append([
-                        job_history["JobName"],
-                        job_history["StartTime"],
-                        job_history["EndTime"],
-                        job_history["ExecutedBy"],
-                        job_history["JobStatus"]["Name"],
-                        job_history["Id"],
-                        item["Progress"],
-                        item["StartTime"],
-                        item["EndTime"],
-                        item["ElapsedTime"],
-                        item["Key"],
-                        item["Value"],
-                        item["JobStatus"]["Name"]
-                    ])
+
+            while job_history_detail_url is not None:
+                job_history_detail_response = requests.get(job_history_detail_url, headers=authenticated_headers, verify=False)
+                job_history_detail_url = None
+
+                if job_history_detail_response.status_code == 200:
+                    job_history_detail_data = job_history_detail_response.json()
+                    
+                    if '@odata.nextLink' in job_history_detail_data:
+                        job_history_detail_url = ("https://%s" % ome_ip_address) + job_history_detail_data['@odata.nextLink'] 
+
+                    job_history_detail_data = job_history_detail_data["value"]
+                    for item in job_history_detail_data:
+                        data_export.append([
+                            job_history["JobName"],
+                            job_history["StartTime"],
+                            job_history["EndTime"],
+                            job_history["ExecutedBy"],
+                            job_history["JobStatus"]["Name"],
+                            job_history["Id"],
+                            item["ExecutionHistoryId"],
+                            item["Progress"],
+                            item["StartTime"],
+                            item["EndTime"],
+                            item["ElapsedTime"],
+                            item["Key"],
+                            item["Value"],
+                            item["JobStatus"]["Name"]
+                        ])
 
         pprint.pprint(data_export)
         with open('get_job_execution_history.csv', 'w') as f:
