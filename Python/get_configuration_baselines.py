@@ -1,7 +1,7 @@
 #
-# _author_ = Grant Curell <grant_curell@dell.com>
+# _author_ = Trevor Squillario <Trevor_Squillario@Dell.com
 #
-# Copyright (c) 2022 Dell EMC Corporation
+# Copyright (c) 2024 Dell EMC Corporation
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -26,7 +26,10 @@ with a given server. For authentication X-Auth is used over Basic
 Authentication. Note: The credentials entered are not stored to disk.
 
 #### Python Example
-`python get_configuration_baseline.py -i 192.168.1.93 -u admin -p somepass -r 192.168.1.45`
+`python get_configuration_baselines.py --ip ome.example.com --user admin --password "calvin" --get-baselines`
+`python get_configuration_baselines.py --ip ome.example.com --user admin --password "calvin" --get-baseline-report --baseline "Gold_config" --export /tmp/summary.csv --filter "Compliant"`
+`python get_configuration_baselines.py --ip ome.example.com --user admin --password "calvin" --get-baseline-detail-report --baseline "Gold_config" --export /tmp/detail.csv`
+`python get_configuration_baselines.py --ip ome.example.com --user admin --password "calvin" --get-baseline-detail-report --baseline "Gold_config" --export /tmp/detail.csv --filter "Compliant"`
 """
 
 import argparse
