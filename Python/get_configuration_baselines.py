@@ -40,9 +40,17 @@ from argparse import RawTextHelpFormatter
 from getpass import getpass
 from pprint import pprint
 from urllib.parse import urlparse
-
+import http
+import logging
 import requests
 import urllib3
+
+http.client.HTTPConnection.debuglevel = 1
+logging.basicConfig()
+logging.getLogger().setLevel(logging.DEBUG)
+requests_log = logging.getLogger("requests.packages.urllib3")
+requests_log.setLevel(logging.DEBUG)
+requests_log.propagate = True
 
 compliance_status = {
     1: "Compliant",
